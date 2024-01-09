@@ -8,22 +8,21 @@ export function HomePage() {
     const dispatch = useDispatch()
 	const posts = useSelector((state) => state.posts.postList)
 	const currentPage = useSelector((state) => state.posts.currentPage)
-	const totalCount = useSelector((state) => state.posts.totalCount)
-
-	// console.log(posts.length, totalCount)
-
+	const canScroll = useSelector((state) => state.posts.canScrolled)
 	const [fetching, setFetching] = useState(true);
 
     useEffect(() => {
-		if (fetching) {
-			axios.get(`https://jsonplaceholder.typicode.com/posts?_limit=20&_page=${currentPage}`)
-				.then((response) => {
-					dispatch(postsActions.setPostList(response.data))
-					dispatch(postsActions.setNewPage())
-					dispatch(postsActions.setTotalCount(response.headers['x-total-count']))
-				})
-				.finally(() => setFetching(false))
+		const fetchPosts = async () => {
+			if (fetching && canScroll) {
+				const response = await axios.get(`https://jsonplaceholder.typicode.com/posts?_limit=20&_page=${currentPage}`)
+				dispatch(postsActions.setPostList(response.data))
+				dispatch(postsActions.setNewPage())
+				dispatch(postsActions.setTotalCount(response.headers['x-total-count']))
+				setFetching(false)
+			}
 		}
+
+		fetchPosts()
 	}, [fetching])
 
     useEffect(() => {
@@ -32,25 +31,20 @@ export function HomePage() {
 	}, []);
 
     const scrollHandler = (e) => {
-		console.log(posts.length, totalCount)
-
-		if (e.target.documentElement.scrollHeight -	(e.target.documentElement.scrollTop + window.innerHeight) < 50
-		// && posts.length < totalCount
-		) {
+		if (e.target.documentElement.scrollHeight -	(e.target.documentElement.scrollTop + window.innerHeight) < 50) {
 			setFetching(true)
 		}
 	};
 
     return (
-        <div className="home-page">
-			<h1 className="home-page__title">Главная</h1>
+        <div className="home-page page">
+			<h1 className="home-page__title">Home</h1>
 			<ul className="home-page__list">
 				{posts.map((post, index) => (
 					<li className="home-page__item" key={post.id}>
-						<div className='home-page__item-number'>{post.id}</div>
-						<div className='home-page__item-title'>{post.title}</div>
+						<div className='home-page__item-number'>Post #{index + 1}</div>
 						<div className='home-page__item-body'>{post.body}</div>
-						<Link className='home-page__item-button' to={`/post/${post.id}`}>Просмотр</Link>
+						<Link className='home-page__item-link' to={`/post/${post.id}`}>Просмотр</Link>
 					</li>
 				))}
 			</ul>

@@ -1,26 +1,33 @@
 body {
   margin: 0;
   padding: 0;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #212121;
 }
 
 #root {
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding-top: 50px;
 }
 
-.home-page {
+.page {
   max-width: 800px;
 }
 
 .home-page__title {
+  margin: 0;
+  margin-bottom: 50px;
   text-align: center;
 }
 
 .home-page__list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 20px;
-  row-gap: 20px;
+  column-gap: 35px;
+  row-gap: 35px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -28,17 +35,58 @@ body {
 
 .home-page__item {
   margin: 0;
-  padding: 0;
+  padding: 20px;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
 }
 
-.home-page__item-title {
-  font-weight: 700;
+.home-page__item-number {
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .home-page__item-body {
+  margin-bottom: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+}
+
+.home-page__item-link {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+}
+
+.post-page {
+  max-width: 500px;
+}
+
+.post-page__title {
+  margin-bottom: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.post-page__content {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.post-page__link {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 0;
+  font-size: 20px;
+  color: #ffffff;
+  text-decoration: none;
+  border: 2px solid #ffffff;
+  border-radius: 10px;
 }

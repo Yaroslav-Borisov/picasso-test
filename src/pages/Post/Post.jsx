@@ -5,20 +5,29 @@ import { useParams, Link } from "react-router-dom";
 export function PostPage() {
     const {id} = useParams();
     const [post, setPost] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`)
             .then(response => {
                 setPost(response.data)
-            })
+                setIsLoading(false)
+        })
 
     }, [])
 
     return (
-        <div>
-            <h1 className="home-page__title">Пост #{post.id}</h1>
-            <div>{post.title}</div>
-			<Link className='home-page__item-button' to={`/`}>назад</Link>
+        <div className="post-page page">
+            {isLoading ? 
+            <h2>Loading...</h2>
+            :
+            <>
+                <h1 className="post-page__number">Post #{post.id}</h1>
+                <div className="post-page__title">"{post.title}"</div>
+                <div className="post-page__content">{post.body}</div>
+                <Link className='post-page__link' to={`/`}>Back</Link>
+            </>
+            }
 
         </div>
     )
