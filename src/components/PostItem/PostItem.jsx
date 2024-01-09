@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-
 export function PostItem({post}) {
     return (
         <li className="home-page__item">
