@@ -1,44 +1,31 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { postsActions } from "../../store/posts.slice";
 import { PostItem } from "../PostItem/PostItem";
+import { useEffect, useState } from "react";
+import { postsAPI } from "../../services/PostsService";
+import debounce from 'lodash.debounce';
 
 export function PostList() {
-    const dispatch = useDispatch()
-	const posts = useSelector((state) => state.posts.postList)
-	const currentPage = useSelector((state) => state.posts.currentPage)
-	const canScroll = useSelector((state) => state.posts.canScrolled)
-	const [fetching, setFetching] = useState(true);
+	const [limit, setLimit] = useState(20)
+	const {data: posts, error, isLoading} = postsAPI.useFetchAllPostsQuery(limit)
 
-    useEffect(() => {
-		const fetchPosts = async () => {
-			if (fetching && canScroll) {
-				const response = await axios.get(`https://jsonplaceholder.typicode.com/posts?_limit=20&_page=${currentPage}`)
-				dispatch(postsActions.setPostList(response.data))
-				dispatch(postsActions.setNewPage())
-				dispatch(postsActions.setTotalCount(response.headers['x-total-count']))
-				setFetching(false)
-			}
-		}
-
-		fetchPosts()
-	}, [fetching])
-
-    useEffect(() => {
+	useEffect(() => {
 		document.addEventListener('scroll', scrollHandler)
 		return () => document.removeEventListener('scroll', scrollHandler)
 	}, []);
 
-    const scrollHandler = (e) => {
-		if (e.target.documentElement.scrollHeight -	(e.target.documentElement.scrollTop + window.innerHeight) < 50) {
-			setFetching(true)
-		}
-	};
+	const scrollHandler = debounce(
+		(e) => {
+			if (e.target.documentElement.scrollHeight -	(e.target.documentElement.scrollTop + window.innerHeight) < 50) {
+				console.log('пора делать запрос')
+				setLimit(prev => prev + 20)
+			}
+	}, 800)
 
     return (
+		
         <ul className="home-page__list">
-			{posts.map((post) => (
+			{isLoading && <h2>Loading...</h2>}
+			{error && <h2>Failed to load posts...</h2>}
+			{posts && posts.map((post) => (
 				<PostItem post={post} key={post.id}/>
 			))}
 		</ul>
