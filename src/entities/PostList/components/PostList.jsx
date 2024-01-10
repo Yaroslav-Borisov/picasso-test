@@ -1,25 +1,23 @@
-import { PostItem } from "../PostItem/PostItem";
 import { useEffect, useState } from "react";
-import { postsAPI } from "../../services/PostsService";
 import debounce from 'lodash.debounce';
+import { PostItem } from "../../PostItem/components/PostItem";
+import { POSTS_PER_FETCH } from "../constants/consts";
+import { postsAPI } from "../api/PostsApi";
+import { useScrolling } from "../hooks/useScrolling";
 
 export function PostList() {
-	const [limit, setLimit] = useState(20)
+	const [limit, setLimit] = useState(POSTS_PER_FETCH)
 	const {data: posts, error, isLoading} = postsAPI.useFetchAllPostsQuery(limit)
-
-	useEffect(() => {
-		document.addEventListener('scroll', scrollHandler)
-		return () => document.removeEventListener('scroll', scrollHandler)
-	}, []);
 
 	const scrollHandler = debounce(
 		(e) => {
 			if (e.target.documentElement.scrollHeight -	(e.target.documentElement.scrollTop + window.innerHeight) < 50) {
-				console.log('пора делать запрос')
-				setLimit(prev => prev + 20)
+				setLimit(prev => prev + POSTS_PER_FETCH)
 			}
-	}, 800)
-
+		}, 800)
+	
+	useScrolling(scrollHandler)
+		
     return (
 		
         <ul className="home-page__list">

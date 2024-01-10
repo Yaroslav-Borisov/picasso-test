@@ -1,9 +1,9 @@
 import { useParams, Link } from "react-router-dom";
-import { postsAPI } from "../../services/PostsService";
+import { postAPI } from "../api/PostApi";
 
 export function PostPage() {
     const {id} = useParams();
-    const {data: post, error, isLoading} = postsAPI.useFetchOnePostQuery(id)
+    const {data: post, error, isLoading} = postAPI.useFetchOnePostQuery(id)
 
     return (
         <div className="post-page page">
